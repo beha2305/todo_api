@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Todo, Movie
-
-
+import re
 class TodoSerializers(serializers.ModelSerializer):
     class Meta:
         model = Todo
@@ -23,3 +22,11 @@ class MovieSerializer(serializers.ModelSerializer):
         if attrs['uzb_gross'] > attrs['world_gross']:
             raise serializers.ValidationError("Uzb gross kichkina bolishi kerak")
         return attrs
+
+    def validate_phone_number(self, phone_number):
+
+        number_format = re.compile(r'^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$')
+
+        if not number_format.match(phone_number):
+            raise serializers.ValidationError("Phone number formati xato")
+        return phone_number
